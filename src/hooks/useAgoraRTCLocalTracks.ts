@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { atom, useRecoilCallback, useRecoilValue } from 'recoil'
 import AgoraRTC, { BufferSourceAudioTrackInitConfig, CameraVideoTrackInitConfig, CustomAudioTrackInitConfig, CustomVideoTrackInitConfig, ILocalTrack, MicrophoneAudioTrackInitConfig, ScreenVideoTrackInitConfig } from 'agora-rtc-sdk-ng'
@@ -17,15 +17,23 @@ export const useAgoraRTCLocalTracks = (autoPublish: true): [ILocalTrack[], any] 
     const [connectionState] = useAgoraRTCConnectionState()
     const localTracks = useRecoilValue(localTracksState)
 
+    useEffect(() => {
+        if (autoPublish && connectionState.curState === 'CONNECTED') {
+            if (localTracks.length > 0) {
+                client?.publish(localTracks)
+            }
+        }
+        return () => {
+            client?.unpublish(localTracks).catch(console.warn)
+        }
+    }, [autoPublish, client, connectionState, localTracks])
+
     const createMicrophoneAudioTrack = useRecoilCallback(({ set }) => async (config?: MicrophoneAudioTrackInitConfig) => {
         const track = await AgoraRTC.createMicrophoneAudioTrack(config)
         track.on('track-ended', () => {
 
         })
         set(localTracksState, (prev) => [...prev, track])
-        if (autoPublish && connectionState.curState === 'CONNECTED') {
-            await client?.publish(track)
-        }
         return track
     }, [client, connectionState])
 
@@ -35,10 +43,6 @@ export const useAgoraRTCLocalTracks = (autoPublish: true): [ILocalTrack[], any] 
 
         })
         set(localTracksState, (prev) => [...prev, track])
-        if (autoPublish && connectionState.curState === 'CONNECTED') {
-            console.warn('test2')
-            await client?.publish(track)
-        }
         return track
     }, [client, connectionState])
 
@@ -51,9 +55,6 @@ export const useAgoraRTCLocalTracks = (autoPublish: true): [ILocalTrack[], any] 
 
         // })
         set(localTracksState, (prev) => [...prev, videoTrack])
-        if (autoPublish && connectionState.curState === 'CONNECTED') {
-            await client?.publish([videoTrack])
-        }
         return videoTrack
     }, [client, connectionState])
 
@@ -63,9 +64,6 @@ export const useAgoraRTCLocalTracks = (autoPublish: true): [ILocalTrack[], any] 
 
         })
         set(localTracksState, (prev) => [...prev, track])
-        if (autoPublish && connectionState.curState === 'CONNECTED') {
-            await client?.publish(track)
-        }
         return track
     }, [client, connectionState])
 
@@ -75,9 +73,6 @@ export const useAgoraRTCLocalTracks = (autoPublish: true): [ILocalTrack[], any] 
 
         })
         set(localTracksState, (prev) => [...prev, track])
-        if (autoPublish && connectionState.curState === 'CONNECTED') {
-            await client?.publish(track)
-        }
         return track
     }, [client, connectionState])
 
@@ -87,9 +82,6 @@ export const useAgoraRTCLocalTracks = (autoPublish: true): [ILocalTrack[], any] 
 
         })
         set(localTracksState, (prev) => [...prev, track])
-        if (autoPublish && connectionState.curState === 'CONNECTED') {
-            await client?.publish(track)
-        }
         return track
     }, [client, connectionState])
 

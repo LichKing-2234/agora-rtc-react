@@ -25,7 +25,7 @@ export const Screen = ({}: Props) => {
 
   return (
     <div>
-      <div className={styles.test}>{state.curState}</div>
+      <div className={styles.test}>{`${state.curState}`}</div>
       <AgoraVideo
         style={{ width: 1280, height: 720 }}
         track={localTracks.at(0) as ILocalVideoTrack}

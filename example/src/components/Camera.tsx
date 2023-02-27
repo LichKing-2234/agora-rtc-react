@@ -5,8 +5,7 @@ import {
   useAgoraRTCSubscribeConfigs,
   AgoraAudio,
   SubscribeConfig,
-  useAgoraRTCLocalTracks,
-  useAgoraRTCClient
+  useAgoraRTCLocalTracks
 } from 'agora-rtc-react'
 import { ILocalVideoTrack } from 'agora-rtc-sdk-ng'
 
@@ -15,7 +14,6 @@ import styles from '../styles.module.css'
 interface Props {}
 
 export const Camera = ({}: Props) => {
-  const [client] = useAgoraRTCClient()
   const [subscribeConfigs] = useAgoraRTCSubscribeConfigs(true)
 
   const [state] = useAgoraRTCConnection({
@@ -31,7 +29,7 @@ export const Camera = ({}: Props) => {
 
   return (
     <div>
-      <div className={styles.test}>{`${client?.uid} - ${state.curState}`}</div>
+      <div className={styles.test}>{`${state.curState}`}</div>
       <AgoraVideo
         style={{ width: 640, height: 480 }}
         track={localTracks.at(0) as ILocalVideoTrack}
