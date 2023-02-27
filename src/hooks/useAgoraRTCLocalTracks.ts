@@ -35,7 +35,6 @@ export const useAgoraRTCLocalTracks = (autoPublish: true): [ILocalTrack[], any] 
 
         })
         set(localTracksState, (prev) => [...prev, track])
-        console.warn('test1')
         if (autoPublish && connectionState.curState === 'CONNECTED') {
             console.warn('test2')
             await client?.publish(track)

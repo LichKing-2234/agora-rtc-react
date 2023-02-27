@@ -5,26 +5,22 @@ import {
   useAgoraRTCSubscribeConfigs,
   AgoraAudio,
   SubscribeConfig,
-  useAgoraRTCDevices,
-  useAgoraRTCLocalTracks
+  useAgoraRTCLocalTracks,
+  useAgoraRTCClient
 } from 'agora-rtc-react'
-import styles from '../styles.module.css'
 import { ILocalVideoTrack } from 'agora-rtc-sdk-ng'
+
+import styles from '../styles.module.css'
 
 interface Props {}
 
 export const Camera = ({}: Props) => {
-  const [channel, setChannel] = React.useState('')
-  const [mirror, setMirror] = React.useState(false)
-
+  const [client] = useAgoraRTCClient()
   const [subscribeConfigs] = useAgoraRTCSubscribeConfigs(true)
-  const [devices1] = useAgoraRTCDevices('videoinput')
-  const [devices2] = useAgoraRTCDevices('audioinput')
-  const [devices3] = useAgoraRTCDevices('audiooutput')
 
   const [state] = useAgoraRTCConnection({
     appid: APPID,
-    channel: channel,
+    channel: '456',
     token: null
   })
 
@@ -33,33 +29,14 @@ export const Camera = ({}: Props) => {
     createCameraVideoTrack()
   }, [])
 
-  const handleDivClick = React.useCallback(() => {
-    setChannel('456')
-  }, [])
-  const handleVideoClick = React.useCallback(() => {
-    setMirror(!mirror)
-  }, [mirror])
-
   return (
     <div>
-      <div className={styles.test} onClick={handleDivClick}>
-        Channel {channel}: {state.curState}
-      </div>
-      {devices1.map((d) => (
-        <div>{`${d.label}: ${d.deviceId}`}</div>
-      ))}
-      {devices2.map((d) => (
-        <div>{`${d.label}: ${d.deviceId}`}</div>
-      ))}
-      {devices3.map((d) => (
-        <div>{`${d.label}: ${d.deviceId}`}</div>
-      ))}
+      <div className={styles.test}>{`${client?.uid} - ${state.curState}`}</div>
       <AgoraVideo
         style={{ width: 640, height: 480 }}
         track={localTracks.at(0) as ILocalVideoTrack}
-        mirror={mirror}
+        mirror={false}
         fit={'contain'}
-        onClick={handleVideoClick}
       />
       {subscribeConfigs.map((v: SubscribeConfig) => {
         return v.mediaType === 'video' ? (
@@ -67,9 +44,8 @@ export const Camera = ({}: Props) => {
             key={v.user.uid}
             style={{ width: 640, height: 480 }}
             track={v.user.videoTrack}
-            mirror={mirror}
+            mirror={false}
             fit={'contain'}
-            onClick={handleVideoClick}
           />
         ) : (
           <AgoraAudio track={v.user.audioTrack} />

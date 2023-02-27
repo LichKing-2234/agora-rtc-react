@@ -32,7 +32,6 @@ export const AgoraRTCProvider: React.FC<React.PropsWithChildren<Props>> = ({
   const handleEvent = useCallback(
     (event: AgoraRTCEvent) =>
       (...ev: any[]) => {
-        console.warn('handleEvent', event, ev, eventsMap.current)
         // @ts-ignore
         for (let cb of eventsMap.current?.[event]?.values() ?? []) {
           cb(...ev)
@@ -44,6 +43,7 @@ export const AgoraRTCProvider: React.FC<React.PropsWithChildren<Props>> = ({
   const initEventHandlers = useCallback(
     (client?: IAgoraRTCClient) => {
       if (!client) return
+      console.warn('initEventHandlers')
       ;(Object.keys(eventsMap.current) as AgoraRTCEvent[]).forEach((event) => {
         client.off(event, handleEvent(event))
         client.on(event, handleEvent(event))
@@ -69,7 +69,7 @@ export const AgoraRTCProvider: React.FC<React.PropsWithChildren<Props>> = ({
    */
   const on = useCallback(
     (ev: AgoraRTCEvent, cb: Function, key: number) => {
-      console.warn('on', ev, cb, key, eventsMap.current)
+      console.warn('on', ev, key, eventsMap.current)
       if (!eventsMap.current[ev]) {
         eventsMap.current[ev] = new Map()
         if (client) {
@@ -107,11 +107,11 @@ export const AgoraRTCProvider: React.FC<React.PropsWithChildren<Props>> = ({
     <RecoilRoot {...recoilRootProps}>
       <AgoraRTCContext.Provider value={client}>
         <AgoraRTCEventContext.Provider value={{ on, off }}>
-          <AgoraRTCDevices>
+          <AgoraRTCUsers>
             <AgoraRTCConnection>
-              <AgoraRTCUsers>{children}</AgoraRTCUsers>
+              <AgoraRTCDevices>{children}</AgoraRTCDevices>
             </AgoraRTCConnection>
-          </AgoraRTCDevices>
+          </AgoraRTCUsers>
         </AgoraRTCEventContext.Provider>
       </AgoraRTCContext.Provider>
     </RecoilRoot>

@@ -12,12 +12,9 @@ import styles from '../styles.module.css'
 interface Props {}
 
 export const Screen = ({}: Props) => {
-  const [channel, setChannel] = React.useState('')
-  const [mirror, setMirror] = React.useState(false)
-
   const [state] = useAgoraRTCConnection({
     appid: APPID,
-    channel: channel,
+    channel: '456',
     token: null
   })
 
@@ -26,24 +23,14 @@ export const Screen = ({}: Props) => {
     createScreenVideoTrack()
   }, [])
 
-  const handleDivClick = React.useCallback(() => {
-    setChannel('456')
-  }, [])
-  const handleVideoClick = React.useCallback(() => {
-    setMirror(!mirror)
-  }, [mirror])
-
   return (
     <div>
-      <div className={styles.test} onClick={handleDivClick}>
-        Channel {channel}: {state.curState}
-      </div>
+      <div className={styles.test}>{state.curState}</div>
       <AgoraVideo
         style={{ width: 1280, height: 720 }}
         track={localTracks.at(0) as ILocalVideoTrack}
-        mirror={mirror}
+        mirror={false}
         fit={'contain'}
-        onClick={handleVideoClick}
       />
     </div>
   )

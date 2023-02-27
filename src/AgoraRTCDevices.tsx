@@ -22,6 +22,7 @@ export const AgoraRTCDevices: React.FC<React.PropsWithChildren<unknown>> = ({
   const initDevices = useRecoilCallback(
     ({ set }) =>
       (devices: MediaDeviceInfo[]) => {
+        console.warn('initDevices', devices)
         set(allDevicesState, devices)
       },
     []
@@ -34,6 +35,7 @@ export const AgoraRTCDevices: React.FC<React.PropsWithChildren<unknown>> = ({
   const onDeviceChanged = useRecoilCallback(
     ({ set }) =>
       (deviceInfo: DeviceInfo) => {
+        console.warn('onDeviceChanged', deviceInfo)
         if (deviceInfo.state === 'ACTIVE') {
           set(allDevicesState, (prev) => [
             ...prev.filter((d) => d.deviceId !== deviceInfo.device.deviceId),

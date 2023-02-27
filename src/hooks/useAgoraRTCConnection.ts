@@ -17,7 +17,7 @@ export const useAgoraRTCConnection = ({ appid, channel, token, uid }: AgoraRTCCo
     const client = useContext(AgoraRTCContext)
     const [state] = useAgoraRTCConnectionState()
     useEffect(() => {
-        if (!appid || !channel) return
+        if (!client || !appid || !channel) return
         console.warn('join', appid, channel, token, uid)
         if (state.curState === 'CONNECTED') {
             client?.leave()
@@ -26,6 +26,6 @@ export const useAgoraRTCConnection = ({ appid, channel, token, uid }: AgoraRTCCo
         return () => {
             client?.leave()
         }
-    }, [appid, channel, token, uid])
+    }, [client, appid, channel, token, uid])
     return [state]
 }
