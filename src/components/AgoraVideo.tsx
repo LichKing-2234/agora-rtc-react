@@ -1,7 +1,6 @@
 import React, { useRef, forwardRef, useEffect, memo } from 'react'
 
 import {
-  ICameraVideoTrack,
   ILocalVideoTrack,
   IRemoteVideoTrack,
   VideoPlayerConfig
@@ -11,7 +10,7 @@ import useMergedRef from '../hooks/useMergedRef'
 
 type BaseProps =
   | React.HTMLAttributes<HTMLDivElement> & {
-      track?: ILocalVideoTrack | IRemoteVideoTrack | ICameraVideoTrack
+      track?: ILocalVideoTrack | IRemoteVideoTrack
     }
 
 type Props = BaseProps & VideoPlayerConfig

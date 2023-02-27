@@ -1,4 +1,6 @@
 import * as React from 'react'
+
+import { ILocalVideoTrack } from 'agora-rtc-sdk-ng'
 import {
   useAgoraRTCConnection,
   AgoraVideo,
@@ -7,7 +9,6 @@ import {
   SubscribeConfig,
   useAgoraRTCLocalTracks
 } from 'agora-rtc-react'
-import { ILocalVideoTrack } from 'agora-rtc-sdk-ng'
 
 import styles from '../styles.module.css'
 
@@ -22,20 +23,27 @@ export const Camera = ({}: Props) => {
     token: null
   })
 
-  const [localTracks, { createCameraVideoTrack }] = useAgoraRTCLocalTracks(true)
+  const [localTracks, { createMicrophoneAudioTrack, createCameraVideoTrack }] =
+    useAgoraRTCLocalTracks(true)
   React.useEffect(() => {
+    createMicrophoneAudioTrack()
     createCameraVideoTrack()
   }, [])
 
   return (
     <div>
       <div className={styles.test}>{`${state.curState}`}</div>
-      <AgoraVideo
-        style={{ width: 640, height: 480 }}
-        track={localTracks.at(0) as ILocalVideoTrack}
-        mirror={false}
-        fit={'contain'}
-      />
+      {localTracks.map((t) => {
+        return t.processorDestination.kind === 'video' ? (
+          <AgoraVideo
+            key={t.getTrackId()}
+            style={{ width: 640, height: 480 }}
+            track={t as ILocalVideoTrack}
+            mirror={false}
+            fit={'contain'}
+          />
+        ) : undefined
+      })}
       {subscribeConfigs.map((v: SubscribeConfig) => {
         return v.mediaType === 'video' ? (
           <AgoraVideo

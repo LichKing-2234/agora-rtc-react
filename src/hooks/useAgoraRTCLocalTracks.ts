@@ -1,23 +1,26 @@
 import { useContext, useEffect } from 'react'
 
 import { atom, useRecoilCallback, useRecoilValue } from 'recoil'
-import AgoraRTC, { BufferSourceAudioTrackInitConfig, CameraVideoTrackInitConfig, CustomAudioTrackInitConfig, CustomVideoTrackInitConfig, ILocalTrack, MicrophoneAudioTrackInitConfig, ScreenVideoTrackInitConfig } from 'agora-rtc-sdk-ng'
+import AgoraRTC, { BufferSourceAudioTrackInitConfig, CameraVideoTrackInitConfig, CustomAudioTrackInitConfig, CustomVideoTrackInitConfig, ILocalAudioTrack, ILocalVideoTrack, MicrophoneAudioTrackInitConfig, ScreenVideoTrackInitConfig } from 'agora-rtc-sdk-ng'
 
 import { AgoraRTCContext } from '../AgoraRTCContext'
 import { useAgoraRTCConnectionState } from './useAgoraRTCConnectionState'
 
-export const localTracksState = atom<ILocalTrack[]>({
+export type AgoraRTCLocalTrack = ILocalAudioTrack | ILocalVideoTrack
+
+export const localTracksState = atom<AgoraRTCLocalTrack[]>({
     key: 'local-tracks',
     default: [],
     dangerouslyAllowMutability: true
 })
 
-export const useAgoraRTCLocalTracks = (autoPublish: true): [ILocalTrack[], any] => {
+export const useAgoraRTCLocalTracks = (autoPublish: true): [AgoraRTCLocalTrack[], any] => {
     const client = useContext(AgoraRTCContext)
     const [connectionState] = useAgoraRTCConnectionState()
     const localTracks = useRecoilValue(localTracksState)
 
     useEffect(() => {
+        console.warn('useAgoraRTCLocalTracks', localTracks)
         if (autoPublish && connectionState.curState === 'CONNECTED') {
             if (localTracks.length > 0) {
                 client?.publish(localTracks)

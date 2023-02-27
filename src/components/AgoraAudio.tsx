@@ -1,14 +1,10 @@
 import React, { Fragment, useEffect } from 'react'
 
-import {
-  ILocalAudioTrack,
-  IMicrophoneAudioTrack,
-  IRemoteAudioTrack
-} from 'agora-rtc-sdk-ng'
+import { ILocalAudioTrack, IRemoteAudioTrack } from 'agora-rtc-sdk-ng'
 
 type BaseProps =
   | React.HTMLAttributes<HTMLDivElement> & {
-      track?: ILocalAudioTrack | IRemoteAudioTrack | IMicrophoneAudioTrack
+      track?: ILocalAudioTrack | IRemoteAudioTrack
     }
 
 type Props = BaseProps

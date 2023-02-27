@@ -26,12 +26,17 @@ export const Screen = ({}: Props) => {
   return (
     <div>
       <div className={styles.test}>{`${state.curState}`}</div>
-      <AgoraVideo
-        style={{ width: 1280, height: 720 }}
-        track={localTracks.at(0) as ILocalVideoTrack}
-        mirror={false}
-        fit={'contain'}
-      />
+      {localTracks.map((t) => {
+        return t.processorDestination.kind === 'video' ? (
+          <AgoraVideo
+            key={t.getTrackId()}
+            style={{ width: 1280, height: 720 }}
+            track={t as ILocalVideoTrack}
+            mirror={false}
+            fit={'contain'}
+          />
+        ) : undefined
+      })}
     </div>
   )
 }
